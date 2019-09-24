@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <vector>
+using namespace std;
 class MyQueue {
     private:
         // store elements
@@ -7,7 +8,7 @@ class MyQueue {
         // a pointer to indicate the start position
         int p_start;            
     public:
-        MyQueue() {p_start = 0;}
+        MyQueue():p_start{0}{}
         /** Insert an element into the queue. Return true if the operation is successful. */
         bool enQueue(int x) {
             data.push_back(x);

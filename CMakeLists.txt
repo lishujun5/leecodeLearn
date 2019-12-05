@@ -1,0 +1,6 @@
+project(demo)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+include_directories(demo include)
+AUX_SOURCE_DIRECTORY(. DIR_SRCS)
+aux_source_directory(./src DIR_SRCS)
+ADD_EXECUTABLE(demo ${DIR_SRCS})

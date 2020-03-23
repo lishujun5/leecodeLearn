@@ -7,3 +7,4 @@ introduction of file directory:
     others : save other file;
     test : save init running funciton file include my test file
 };
+-fsanitize=address -fno-omit-frame-pointer -O1 -g

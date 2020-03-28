@@ -1,14 +1,17 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <queue>
+#include<algorithm>
 using namespace std;
-#define NULLNODE (-1)
 template <class T>
 struct TreeNode
 {
-    TreeNode* leftNode;
-    TreeNode* rightNode;
-    T val;
+    public:
+        TreeNode():leftNode(nullptr),rightNode(nullptr){}
+        TreeNode* leftNode;
+        TreeNode* rightNode;
+        T val;
 };
 template <class T>
 class Tree
@@ -22,8 +25,8 @@ class Tree
         typedef T* Point;
         typedef T& Reference;
         typedef vector<PtNode> Order_type;  //遍历返回类型
-        Tree() = delete;
-        Tree(const initializer_list<T>& TreeValueList):root(nullptr)
+        Tree():root(nullptr){}
+        Tree(const initializer_list<T>& TreeValueList , T disableVal):root(nullptr)
         {
             queue<PtNode>  CrossNode;
             /*处理第一个节点*/
@@ -40,7 +43,7 @@ class Tree
                 if(isLeft)
                 {
                     tmpRootNode = CrossNode.front();
-                    if(*iter != NULLNODE)
+                    if(*iter != disableVal)
                     {
                         tmpNode = new Node(); //生成节点
                         tmpNode->val = *iter;
@@ -50,7 +53,7 @@ class Tree
                 }
                 else
                 {
-                    if(*iter != NULLNODE)
+                    if(*iter != disableVal)
                     {
                         tmpNode = new Node(); //生成节点
                         tmpNode->val = *iter;
@@ -62,7 +65,7 @@ class Tree
                 isLeft = !isLeft;
             }
         }
-        ~Tree()
+        virtual ~Tree()
         {
             Order_type tmp = this->preOrder();
             for(auto i = tmp.begin() ; i != tmp.end() ; i++)
@@ -86,7 +89,7 @@ class Tree
             {
                 preOrder(ret,_root->leftNode);
             }
-            if(_root->leftNode)
+            if(_root->rightNode)
             {
                 preOrder(ret,_root->rightNode);
             }
@@ -134,6 +137,76 @@ class Tree
             ret.push_back(_root);
             return ;
         }
-    private:
-        PtNode root;//根节点
+        void display_Tree();
+        int getDepth();
+        int getDepth(PtNode curNode);
+protected:
+        virtual TreeNode<T>* NewNode();
+protected:
+    PtNode root;//根节点
+
+
 };
+template <typename T>
+int Tree<T>::getDepth( )
+{
+    return getDepth(this->root);
+}
+template <typename T>
+int Tree<T>::getDepth(PtNode curNode)
+{
+    if(!curNode)
+    {
+        return 0;
+    }
+    //cout<<"curNode->val = "<<curNode->val<<endl;
+    if(!curNode ->leftNode && !curNode->rightNode)
+    {
+        return 1;
+    }
+    return max(getDepth(curNode->leftNode) , getDepth(curNode->rightNode))+1;
+}
+template <typename T>
+void Tree<T>::display_Tree()
+{
+    int depth = this->getDepth();
+    Order_type preOrder = this->preOrder();
+    int NodeNum = preOrder.size();
+    queue<PtNode> data;
+    int i = 0;
+    int outputTimes = 0;
+    PtNode tmpNode = nullptr;
+    data.push(this->root);
+    while(!data.empty())
+    {
+        tmpNode = data.front();
+        if(!tmpNode)
+        {
+            cout<<"null";
+        }
+        else
+        {
+            i++;
+            cout<<tmpNode->val;
+            data.push(tmpNode->leftNode);
+            data.push(tmpNode->rightNode);
+        }
+        outputTimes++;
+        cout<<string("     ");
+        if(outputTimes%5 == 0)
+        {
+            cout<<endl;
+        }
+        data.pop();
+        if(i == NodeNum)
+        {
+            break;
+        }
+    }
+    cout<<endl;
+}
+template <class T>
+TreeNode<T>* Tree<T>::NewNode()
+{
+    return new Node();
+}

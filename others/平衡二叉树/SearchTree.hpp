@@ -1,27 +1,31 @@
 #pragma once
 /*搜索二叉树*/
 #include "Tree.hpp"
-template <class T>
-class SearchTree : public Tree<T>
+#include "Node.hpp"
+template <class T , class N = TreeNode<T>>
+class SearchTree : public Tree<T,N>
 {
     public:
-        typedef typename Tree<T>::PtNode PtNode;
-        typedef SearchTree<T> self;
-        typedef Tree<T> FatherTree;
-        typedef typename Tree<T>::Node Node;
-        typedef SearchTree<T> STree;
-        SearchTree():Tree<T>(){};
-        SearchTree(const initializer_list<T>& TreeValueList):Tree<T>()
+        typedef N Node;
+        typedef Node* PtNode;
+        typedef Node& RefNode;
+        typedef SearchTree<T,N> self;
+        typedef Tree<T,N> FatherTree;
+        typedef SearchTree<T,N> STree;
+
+
+        SearchTree():Tree<T,N>(){};
+        SearchTree(const initializer_list<T>& TreeValueList):Tree<T,N>()
         {
             auto firstval = TreeValueList.begin();
             auto endVal = TreeValueList.end();
-            PtNode tmpNode = this->NewNode();
+            PtNode tmpNode = new Node();
             tmpNode->val = *firstval++;
             this->root = tmpNode;
             
             while(firstval != endVal)
             {
-                PtNode tmp = this->NewNode();
+                PtNode tmp = new Node();
                 tmp->val = *firstval;
                 insertNode(tmp);
                 firstval++;
@@ -31,19 +35,21 @@ class SearchTree : public Tree<T>
         {
             
         }
-    protected:
-        /*将传入的树生成搜索二叉树*/
-        TreeNode<T>* find(T val);
-        TreeNode<T>* find(T val , PtNode curNode);
+    public:
+        PtNode find(T val);
+        PtNode find(T val , PtNode curNode);
         bool insertNode(T val);
         bool insertNode(PtNode tmpNode);
+    private:
+        /*将传入的树生成搜索二叉树*/  
         bool insertNode(PtNode tmpNode , PtNode curNode); 
 };
-template <class T>
-bool SearchTree<T>::insertNode(T val)
+
+template <class T, class N>
+bool SearchTree<T,N>::insertNode(T val)
 {
     bool ret = false;
-    PtNode tmpNode = this->NewNode();
+    PtNode tmpNode = new Node();
     tmpNode->val = val;
     ret = insertNode(tmpNode);
     if(ret == false)
@@ -52,8 +58,8 @@ bool SearchTree<T>::insertNode(T val)
     }
     return ret;
 }
-template <class T>
-bool SearchTree<T>::insertNode(PtNode tmpNode , PtNode curNode)
+template <class T, class N>
+bool SearchTree<T,N>::insertNode(PtNode tmpNode , PtNode curNode)
 {
     bool ret = false;
     if(tmpNode->val < curNode->val)
@@ -89,13 +95,13 @@ bool SearchTree<T>::insertNode(PtNode tmpNode , PtNode curNode)
     }
     return ret;
 }
-template <class T>
-TreeNode<T>* SearchTree<T>::find(T val)
+template <class T, class N>
+typename SearchTree<T,N>::PtNode SearchTree<T,N>::find(T val)
 {
     return find(val,this->root);
 }
-template <class T>
-TreeNode<T>* SearchTree<T>::find(T val , PtNode curNode)
+template <class T, class N>
+typename SearchTree<T,N>::PtNode SearchTree<T,N>::find(T val , PtNode curNode)
 {
     if(curNode->val == val)
         return curNode;
@@ -113,8 +119,8 @@ TreeNode<T>* SearchTree<T>::find(T val , PtNode curNode)
     }
     return nullptr;
 }
-template <typename T>
-bool SearchTree<T>::insertNode(PtNode tmpNode)
+template <class T, class N>
+bool SearchTree<T,N>::insertNode(PtNode tmpNode)
 {
     if(this->root == nullptr)
     {

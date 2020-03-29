@@ -7,5 +7,6 @@ int main()
     {
         dd.insertNode(rand()%20);
     }
+    dd.display_Tree();
     return 0;
 }

@@ -8,22 +8,26 @@ int main()
     cout<<"depth is "<<data.getDepth()<<endl;
     data.display_Tree();
     cout<<"****************"<<endl;
+    
     SearchTree<int> dd;
     for (int i = 0; i < 20; i++)
     {
-        dd.insertNode(rand()%20);
+        int tmpInt  = rand()%20;
+        cout<<tmpInt<<"   ";
+        dd.insertNode(tmpInt);
     }
+    cout<<endl;
     cout<<"depth is "<<dd.getDepth()<<endl;
     dd.display_Tree();
     auto q = dd.find(5);
     if(q == nullptr)
     {
-        cout<<"Ã»ÕÒµ½"<<endl;
+        cout<<"æ²¡æœ‰æ‰¾åˆ°"<<endl;
     }
     else
     {
-        cout<<"ÕÒµ½ÁË"<<endl;
+        cout<<"æ‰¾åˆ°äº†"<<endl;
     }
-    
+
     return 0;
 }

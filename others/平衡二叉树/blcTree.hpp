@@ -42,6 +42,8 @@ private:
     void setFatherNode(PtNode curNode , PtNode fatherNode);
     /*获取旋转类型*/
     int getCirCleType(PtNode curNode);
+    /*在插入元素后判断是否有不平衡节点*/
+    PtNode isBalance(PtNode insertNode , int* circleType);
 };
 template <class T ,class N>
 bool BlcTree<T,N>::insertNode(T val)
@@ -186,20 +188,8 @@ bool BlcTree<T,N>::insertNode(PtNode tmpNode)
     cout<<endl;
     cout<<endl;
     cout<<endl;
-    if(!tmpNode->pre||!tmpNode->pre->pre)  //只有两层时不需要判断是否平衡
-    {
-        cout<<"only two lever , balance tree"<<endl;
-        return true;
-    }
-    cout<<tmpNode->pre->pre->val<<endl;
-    cout<<"tmpNode->pre->pre->leftDepth = "<<tmpNode->pre->pre->leftDepth<<endl;
-    cout<<"tmpNode->pre->pre->rightDepth = "<<tmpNode->pre->pre->rightDepth<<endl;
-    if(abs(tmpNode->pre->pre->leftDepth - tmpNode->pre->pre->rightDepth) < 2)
-    {
-        cout<<"balance tree"<<endl;
-        return true;
-    }
-    while(needCircle = getCirCleType())
+    
+    if(nullptr != (needCircle = isBalance(tmpNode , &circleType)))
     {
         if(circleType == 0)
         {
@@ -310,31 +300,52 @@ void BlcTree<T,N>::setFatherNode()
     }
 }
 /***********************
+circleType:
 0x00  ----->    右右
 0x01  ----->    右左
 0x10  ----->    左右
 0x11  ----->    左左
+return:nullptr --- > 无不平衡节点
 ***********************/
 template <class T ,class N>
-int BlcTree<T,N>::getCirCleType(PtNode curNode)
+typename BlcTree<T,N>::PtNode BlcTree<T,N>::isBalance(PtNode insertNode , int* circleType)
 {
-    int circleType = 0;
-    PtNode tmpNode = curNode;
-    for(int i = 0 ; i < 2 ; i++)
+    if(!insertNode->pre || !insertNode->pre->pre) //低于三层的树，无需判断是否平衡
     {
-            if(tmpNode->pre->leftNode == tmpNode)
+        return nullptr;
+    }
+    bool isEnough = false;//记录是否已经记录两个树形
+    char recodeTime = 0;
+    PtNode tmpNode = insertNode;
+    *circleType = 0;
+    while(tmpNode)
+    {
+
+        if(abs(tmpNode->rightDepth - tmpNode->leftDepth) >= 2)
+        {
+            return tmpNode;
+        }
+        else
+        {
+            if(isEnough)
             {
-                circleType +=  0x01 << i;
-            }
-            else if(tmpNode->pre->rightNode == tmpNode)
-            {
-                circleType = circleType | 0x00;
+                *circleType = *circleType>>1;
             }
             else
             {
-                circleType = 0xff;
+                recodeTime++;
+                if(recodeTime == 2)
+                {
+                    isEnough = true;
+                }
+            }
+            
+            if(tmpNode->pre->leftNode == tmpNode)
+            {
+                    *circleType = *circleType | 0x3;
             }
             tmpNode = tmpNode->pre;
+        }
     }
-    return circleType;
+    return nullptr;
 }

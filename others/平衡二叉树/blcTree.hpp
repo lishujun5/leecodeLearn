@@ -2,7 +2,7 @@
 #include "SearchTree.hpp"
 #include "Node.hpp"
 template <class T,  class N = blcTreeNode<T>>
-class BlcTree : public SearchTree<T,N>
+class BlcTree final: public SearchTree<T,N>
 {
 public:
     typedef N Node;
@@ -16,7 +16,7 @@ public:
               insertNode(i);
         }
     }
-    ~BlcTree(){}
+    virtual ~BlcTree(){}
 public:
     bool insertNode(T val);
     bool insertNode(PtNode tmpNode);

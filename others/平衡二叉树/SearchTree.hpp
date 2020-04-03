@@ -36,11 +36,11 @@ class SearchTree : public Tree<T,N>
             
         }
     public:
-        virtual PtNode find(T val);
+        PtNode find(T val);
         
-        bool insertNode(T val);
+        virtual bool insertNode(T val);
 
-        bool insertNode(PtNode tmpNode);
+        virtual bool insertNode(PtNode tmpNode);
 
         virtual bool deleteNode(T val);
     private:

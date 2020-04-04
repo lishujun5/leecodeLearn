@@ -2,7 +2,7 @@
 /*搜索二叉树*/
 #include "Tree.hpp"
 #include "Node.hpp"
-template <class T , class N = TreeNode<T>>
+template <class T , class N = SearchNode<T>>
 class SearchTree : public Tree<T,N>
 {
     public:
@@ -31,18 +31,23 @@ class SearchTree : public Tree<T,N>
                 firstval++;
             }
         }
-        ~SearchTree()
+        virtual ~SearchTree()
         {
             
         }
     public:
         PtNode find(T val);
-        PtNode find(T val , PtNode curNode);
-        bool insertNode(T val);
-        bool insertNode(PtNode tmpNode);
+        
+        virtual bool insertNode(T val);
+
+        virtual bool insertNode(PtNode tmpNode);
+
+        virtual bool deleteNode(T val);
     private:
         /*将传入的树生成搜索二叉树*/  
         bool insertNode(PtNode tmpNode , PtNode curNode); 
+
+        PtNode find(T val , PtNode curNode);
 };
 
 template <class T, class N>
@@ -72,6 +77,7 @@ bool SearchTree<T,N>::insertNode(PtNode tmpNode , PtNode curNode)
         {
             //cout<<tmpNode->val<<"-------->"<<curNode->val<<endl;
             curNode->leftNode  = tmpNode;
+            tmpNode->pre = curNode;
             ret = true;
         }
     }
@@ -85,6 +91,7 @@ bool SearchTree<T,N>::insertNode(PtNode tmpNode , PtNode curNode)
         {
             //cout<<tmpNode->val<<"-------->"<<curNode->val<<endl;
             curNode->rightNode  = tmpNode;
+            tmpNode->pre  = curNode;
             ret = true;
         }
     }
@@ -128,4 +135,113 @@ bool SearchTree<T,N>::insertNode(PtNode tmpNode)
         return true;
     }
     return this->insertNode(tmpNode,  this->root);
+}
+template <class T, class N>
+bool SearchTree<T,N>::deleteNode(T val)
+{
+    PtNode fatherNode = nullptr;
+    PtNode exchangeNode = nullptr;
+    /*step 1:找到删除节点*/
+    PtNode dltNode = find(val);
+    if(dltNode == nullptr)
+    {
+        cout<<"节点不存在,无法删除"<<endl;
+        return false;
+    }
+    /*step 2:根据情况处理*/
+    /*情况一：节点没有子节点*/
+    if(!dltNode->leftNode && !dltNode -> rightNode)
+    {
+        if(dltNode->pre)
+        {
+            if(dltNode->pre->leftNode == dltNode)
+            {
+                dltNode->pre->leftNode = nullptr;
+            }
+            else
+            {
+                dltNode->pre->rightNode = nullptr;
+            } 
+        }
+        else
+        {
+            this->root = nullptr;
+        }
+        
+        delete dltNode;
+        return true;
+    }
+    /*情况二: 节点左右子节点只存在一个*/
+    if(dltNode->leftNode && !dltNode->rightNode)
+    {
+        exchangeNode = dltNode->leftNode;
+    }
+    else if(!dltNode->leftNode && dltNode->rightNode)
+    {
+        exchangeNode = dltNode->rightNode;
+    }
+    if(exchangeNode)
+    {
+        if(dltNode->pre)
+        {
+            if(dltNode->pre->rightNode == dltNode)
+            {
+                dltNode->pre->rightNode = exchangeNode;
+            }
+            else
+            {
+                dltNode->pre->leftNode = exchangeNode;
+            }
+            exchangeNode->pre = dltNode->pre;
+        }
+        else
+        {
+            this->root = exchangeNode;
+            exchangeNode -> pre = nullptr;
+        }
+        delete dltNode;
+        return true;
+    }
+    /*情况三：左右节点都存在*/
+    PtNode MiddleNode = dltNode->leftNode;
+    while(MiddleNode) //寻找中继节点
+    {
+        if(!MiddleNode->rightNode)
+        {
+            break;
+        }
+        MiddleNode = MiddleNode->rightNode;
+    }
+    if(MiddleNode -> leftNode)
+    {
+        MiddleNode->pre->rightNode = MiddleNode;
+    }
+
+    if(dltNode->leftNode !=  MiddleNode) // 如果中继节点是删除节点的子节点，则替换时，不能将子节点的子节点指向自己
+    {
+        MiddleNode->leftNode = dltNode->leftNode;
+        dltNode->leftNode->pre = MiddleNode;
+    }
+    if(dltNode->rightNode !=  MiddleNode)
+    {
+        MiddleNode->rightNode = dltNode->rightNode;
+        dltNode->rightNode->pre = MiddleNode;
+    }
+   
+    if(!dltNode->pre)   //删除节点是根节点
+    {
+        this->root = MiddleNode;
+        delete dltNode;
+        return true;
+    }
+    if(dltNode->pre->rightNode == dltNode)
+    {
+        dltNode->pre->rightNode = MiddleNode;
+    }
+    else
+    {
+        dltNode->pre->leftNode = MiddleNode;
+    }
+    delete dltNode;
+    return true;
 }

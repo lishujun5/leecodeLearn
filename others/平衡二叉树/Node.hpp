@@ -22,7 +22,16 @@ struct blcTreeNode
     blcTreeNode<T>* pre;  //父节点
     T val;
 };
-
+template <class T>
+struct SearchNode
+{
+        SearchNode():leftNode(nullptr),rightNode(nullptr),val(0),pre(nullptr){}
+        SearchNode(const T& value):leftNode(nullptr),rightNode(nullptr),val(value),pre(nullptr){}
+        SearchNode* leftNode;
+        SearchNode* rightNode;
+        SearchNode* pre;
+        T val;
+};
 /*红黑树节点*/
 typedef enum
 {

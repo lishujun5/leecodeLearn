@@ -365,8 +365,6 @@ typename BlcTree<T,N>::PtNode BlcTree<T,N>::isBalance(PtNode insertNode , int* c
     {
         return nullptr;
     }
-    bool isEnough = false;//记录是否已经记录两个树形
-    char recodeTime = 0;
     PtNode tmpNode = insertNode;
     *circleType = 0;
     while(tmpNode)

@@ -192,7 +192,6 @@ int Tree<T,N>::getDepth(PtNode curNode)
 template <class T , class N>
 void Tree<T,N>::display_Tree()
 {
-    int depth = this->getDepth();
     Order_type preOrder = this->preOrder();
     int NodeNum = preOrder.size();
     queue<PtNode> data;

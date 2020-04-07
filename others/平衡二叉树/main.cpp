@@ -28,6 +28,11 @@ int main()
     {
         cout<<"找到了"<<endl;
     }
-
+    dd.deleteNode(5);
+    dd.display_Tree();
+    dd.deleteNode(1);
+    dd.display_Tree();
+    dd.deleteNode(7);
+    dd.display_Tree();
     return 0;
 }

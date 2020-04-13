@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Tree.hpp"
+#include "RBTree.hpp"
 #include "SearchTree.hpp"
 using namespace std;
 int main()
@@ -28,11 +29,24 @@ int main()
     {
         cout<<"找到了"<<endl;
     }
-    dd.deleteNode(5);
-    dd.display_Tree();
-    dd.deleteNode(1);
-    dd.display_Tree();
-    dd.deleteNode(7);
-    dd.display_Tree();
+
+    RBTree<int> aa;
+    for (int i = 0; i < 100; i++)
+    {
+        int tmpInt  = rand()%100;
+        cout<<tmpInt<<"   ";
+        aa.insertNode(tmpInt);
+    }
+    aa.insertNode(19);
+    aa.insertNode(12);
+    aa.insertNode(30);
+    aa.insertNode(5);
+    aa.insertNode(13);
+    aa.insertNode(35);
+    aa.insertNode(1);
+    aa.insertNode(7);
+    aa.insertNode(6);
+    aa.display_Tree();
+    cout<<aa.isRbTree()<<endl;
     return 0;
 }

@@ -46,6 +46,6 @@ struct RBTreeNode
     RBTreeNode* leftNode;
     RBTreeNode* rightNode;
     int color;
-    blcTreeNode<T>* pre;
+    RBTreeNode* pre;
     T val;
 };

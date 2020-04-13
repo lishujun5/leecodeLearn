@@ -12,7 +12,7 @@ class SearchTree : public Tree<T,N>
         typedef SearchTree<T,N> self;
         typedef Tree<T,N> FatherTree;
         typedef SearchTree<T,N> STree;
-
+        typedef typename Tree<T,N>::Order_type Order_type;
 
         SearchTree():Tree<T,N>(){};
         SearchTree(const initializer_list<T>& TreeValueList):Tree<T,N>()
@@ -39,14 +39,15 @@ class SearchTree : public Tree<T,N>
         PtNode find(T val);
         
         virtual bool insertNode(T val);
+        
+        virtual bool deleteNode(T val);
+
+protected:
 
         virtual bool insertNode(PtNode tmpNode);
 
-        virtual bool deleteNode(T val);
-    private:
-        /*将传入的树生成搜索二叉树*/  
         bool insertNode(PtNode tmpNode , PtNode curNode); 
-
+        /*将传入的树生成搜索二叉树*/  
         PtNode find(T val , PtNode curNode);
 };
 

@@ -344,5 +344,16 @@ bool RBTree<T,N>::getBlackNum(PtNode curNode , int& blackNodeNum)
 template <class T ,class N>
 bool RBTree<T,N>::deleteNode(T val)
 {
-
+    if(this->root)
+    {
+        return false;
+    }
+    PtNode dltNode = this->find(val);
+    if(!dltNode)  //节点不存在
+    {
+        return false;
+    }
+    /*第一种情况 被删除节点为红色，此情况直接调用二叉搜索树删除就好*/
+    // if(dltNode->)
+    
 }

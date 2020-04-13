@@ -42,6 +42,8 @@ class SearchTree : public Tree<T,N>
         
         virtual bool deleteNode(T val);
 
+        bool isSearchTree();
+
 protected:
 
         virtual bool insertNode(PtNode tmpNode);
@@ -49,6 +51,10 @@ protected:
         bool insertNode(PtNode tmpNode , PtNode curNode); 
         /*将传入的树生成搜索二叉树*/  
         PtNode find(T val , PtNode curNode);
+        /*设置右节点*/
+        virtual inline void setRightNode(PtNode pre , PtNode rightNode);
+        /*设置左节点*/
+        virtual inline void setLeftNode(PtNode pre , PtNode leftNode);
 };
 
 template <class T, class N>
@@ -77,8 +83,7 @@ bool SearchTree<T,N>::insertNode(PtNode tmpNode , PtNode curNode)
         else
         {
             //cout<<tmpNode->val<<"-------->"<<curNode->val<<endl;
-            curNode->leftNode  = tmpNode;
-            tmpNode->pre = curNode;
+            setLeftNode(curNode , tmpNode);
             ret = true;
         }
     }
@@ -91,8 +96,7 @@ bool SearchTree<T,N>::insertNode(PtNode tmpNode , PtNode curNode)
         else
         {
             //cout<<tmpNode->val<<"-------->"<<curNode->val<<endl;
-            curNode->rightNode  = tmpNode;
-            tmpNode->pre  = curNode;
+            setRightNode(curNode,tmpNode);
             ret = true;
         }
     }
@@ -187,15 +191,14 @@ bool SearchTree<T,N>::deleteNode(T val)
         {
             if(dltNode->pre->rightNode == dltNode)
             {
-                dltNode->pre->rightNode = exchangeNode;
+                setRightNode(dltNode->pre , exchangeNode);
             }
             else
             {
-                dltNode->pre->leftNode = exchangeNode;
+                setLeftNode(dltNode->pre , exchangeNode);
             }
-            exchangeNode->pre = dltNode->pre;
         }
-        else
+        else   //删除节点是根节点
         {
             this->root = exchangeNode;
             exchangeNode -> pre = nullptr;
@@ -213,36 +216,88 @@ bool SearchTree<T,N>::deleteNode(T val)
         }
         MiddleNode = MiddleNode->rightNode;
     }
-    if(MiddleNode -> leftNode)
+    if(MiddleNode == dltNode->leftNode) //删除节点的左节点就是中继节点
     {
-        MiddleNode->pre->rightNode = MiddleNode;
-    }
-
-    if(dltNode->leftNode !=  MiddleNode) // 如果中继节点是删除节点的子节点，则替换时，不能将子节点的子节点指向自己
-    {
-        MiddleNode->leftNode = dltNode->leftNode;
-        dltNode->leftNode->pre = MiddleNode;
-    }
-    if(dltNode->rightNode !=  MiddleNode)
-    {
-        MiddleNode->rightNode = dltNode->rightNode;
-        dltNode->rightNode->pre = MiddleNode;
-    }
-   
-    if(!dltNode->pre)   //删除节点是根节点
-    {
-        this->root = MiddleNode;
+        if(dltNode->pre)  //删除节点不是根节点
+        {
+            if(dltNode->pre->rightNode == dltNode)
+            {
+                setRightNode(dltNode->pre , MiddleNode);
+            }
+            else
+            {
+                setLeftNode(dltNode->pre , MiddleNode);
+            }
+            setRightNode(MiddleNode,dltNode->rightNode);
+        }
+        else
+        {
+            this->root = MiddleNode;
+            setRightNode(MiddleNode,dltNode->rightNode);
+            MiddleNode->pre = nullptr;
+        }
         delete dltNode;
         return true;
     }
-    if(dltNode->pre->rightNode == dltNode)
+    else  //此处为大概率情况
     {
-        dltNode->pre->rightNode = MiddleNode;
+        if(MiddleNode->leftNode)
+        {
+            setRightNode(MiddleNode->pre,MiddleNode->leftNode);
+        }
+        else
+        {
+           MiddleNode->pre->rightNode = nullptr;
+        }
+        if(dltNode->pre) //删除节点不是根节点
+        {
+            if(dltNode->pre->rightNode == dltNode)
+            {
+                setRightNode(dltNode->pre,MiddleNode);
+            }
+            else
+            {
+                setLeftNode(dltNode->pre,MiddleNode);
+            }
+            setLeftNode(MiddleNode,dltNode->leftNode);
+            setRightNode(MiddleNode,dltNode->rightNode);
+        }
+        else
+        {
+            this->root = MiddleNode;
+            MiddleNode->pre = nullptr;
+            setLeftNode(MiddleNode,dltNode->leftNode);
+            setRightNode(MiddleNode,dltNode->rightNode);
+        }
+        delete dltNode;
+        return true;
     }
-    else
+    
+}
+template <class T , class N>
+inline void SearchTree<T,N>::setRightNode(PtNode pre , PtNode rightNode)
+{
+    pre->rightNode = rightNode;
+    rightNode->pre = pre;
+}
+template <class T , class N>
+inline void SearchTree<T,N>::setLeftNode(PtNode pre , PtNode leftNode)
+{
+    pre->leftNode = leftNode;
+    leftNode->pre = pre;
+}
+template <class T , class N>
+bool SearchTree<T,N>::isSearchTree()
+{
+    Order_type middleOrder = this->MidOrder(); //根据二叉搜索树，中序遍历为有序数列
+    auto i=middleOrder.begin();
+    auto next = i;
+    ++next;
+    while(++next != middleOrder.end())
     {
-        dltNode->pre->leftNode = MiddleNode;
+        if((*i)->val > (*next)->val)
+            return false;
+        ++i;
     }
-    delete dltNode;
     return true;
 }
